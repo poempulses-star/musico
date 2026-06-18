@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Spotifyish — Music Streaming</title>
+<meta name="description" content="Spotify-inspired music streaming powered by YouTube." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="bg-orbs">
+  <span class="orb orb-1"></span><span class="orb orb-2"></span><span class="orb orb-3"></span>
+</div>
+
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar glass">
+    <div class="brand">
+      <i class="bi bi-spotify"></i><span>Musico</span>
+    </div>
+    <nav class="nav-list">
+      <button class="nav-item active" data-view="home"><i class="bi bi-house-door-fill"></i> Home</button>
+      <button class="nav-item" data-view="search"><i class="bi bi-search"></i> Search</button>
+      <button class="nav-item" data-view="library"><i class="bi bi-collection-play-fill"></i> Library</button>
+      <button class="nav-item" data-view="liked"><i class="bi bi-heart-fill"></i> Liked Songs</button>
+    </nav>
+
+    <div class="side-section">
+      <div class="side-title">Your Playlists</div>
+      <div id="playlistList" class="playlist-list"></div>
+      <button id="newPlaylistBtn" class="btn btn-sm new-playlist"><i class="bi bi-plus-lg"></i> New Playlist</button>
+    </div>
+
+    <div class="side-section">
+      <div class="side-title">Recent Searches</div>
+      <div id="searchHistory" class="history-list"></div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-area">
+    <header class="topbar glass">
+      <div class="d-flex gap-2">
+        <button class="round-btn" onclick="history.back()"><i class="bi bi-chevron-left"></i></button>
+        <button class="round-btn" onclick="history.forward()"><i class="bi bi-chevron-right"></i></button>
+      </div>
+      <div class="search-wrap">
+        <i class="bi bi-search"></i>
+        <input id="searchInput" type="text" placeholder="Search songs, artists, albums..." autocomplete="off"/>
+      </div>
+      <div class="profile-chip"><i class="bi bi-person-fill"></i> You</div>
+    </header>
+
+    <section id="view-home" class="view active">
+      <div class="hero glass">
+        <div>
+          <p class="eyebrow">Welcome back</p>
+          <h1>Good vibes only.</h1>
+          <p class="hero-sub">Stream millions of tracks from YouTube — curated like Spotify.</p>
+          <div class="hero-chips">
+            <button class="chip" data-q="trending music 2025">Trending</button>
+            <button class="chip" data-q="top hindi songs">Hindi</button>
+            <button class="chip" data-q="top urdu songs">Urdu</button>
+            <button class="chip" data-q="top punjabi songs">Punjabi</button>
+            <button class="chip" data-q="kpop hits">Korean</button>
+            <button class="chip" data-q="top arabic songs">Arabic</button>
+            <button class="chip" data-q="english top hits">English</button>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="row-title">Trending Songs</h2>
+      <div id="row-trending" class="card-row"></div>
+
+      <h2 class="row-title">Popular Artists</h2>
+      <div id="row-artists" class="card-row"></div>
+
+      <h2 class="row-title">New Releases</h2>
+      <div id="row-new" class="card-row"></div>
+
+      <h2 class="row-title">Recommended For You</h2>
+      <div id="row-recommended" class="card-row"></div>
+
+      <h2 class="row-title">Recently Played</h2>
+      <div id="row-recent" class="card-row"></div>
+    </section>
+
+    <section id="view-search" class="view">
+      <h2 class="row-title">Search</h2>
+      <div class="genre-grid">
+        <button class="genre" data-q="english pop hits" style="--g:#1e3264">English</button>
+        <button class="genre" data-q="hindi bollywood hits" style="--g:#e8115b">Hindi</button>
+        <button class="genre" data-q="urdu songs" style="--g:#148a08">Urdu</button>
+        <button class="genre" data-q="punjabi top songs" style="--g:#b06ab3">Punjabi</button>
+        <button class="genre" data-q="kpop top hits" style="--g:#dc148c">Korean</button>
+        <button class="genre" data-q="arabic top songs" style="--g:#8d67ab">Arabic</button>
+        <button class="genre" data-q="lofi chill beats" style="--g:#477d95">Chill</button>
+        <button class="genre" data-q="workout music" style="--g:#e91429">Workout</button>
+      </div>
+      <h2 class="row-title" id="searchResultsTitle" style="display:none">Results</h2>
+      <div id="searchResults" class="result-list"></div>
+    </section>
+
+    <section id="view-library" class="view">
+      <h2 class="row-title">Your Library</h2>
+      <div id="libraryGrid" class="card-row"></div>
+    </section>
+
+    <section id="view-liked" class="view">
+      <h2 class="row-title"><i class="bi bi-heart-fill text-danger"></i> Liked Songs</h2>
+      <div id="likedList" class="result-list"></div>
+    </section>
+
+    <section id="view-playlist" class="view">
+      <div class="playlist-header">
+        <div class="pl-cover"><i class="bi bi-music-note-beamed"></i></div>
+        <div>
+          <p class="eyebrow">Playlist</p>
+          <h1 id="plName">Playlist</h1>
+          <p class="hero-sub" id="plCount">0 songs</p>
+          <button class="btn play-all-btn" id="playAllBtn"><i class="bi bi-play-fill"></i> Play</button>
+        </div>
+      </div>
+      <div id="playlistSongs" class="result-list"></div>
+    </section>
+
+    <div class="loader" id="loader"><div class="spinner"></div></div>
+  </main>
+</div>
+
+<!-- Player -->
+<footer class="player glass">
+  <div class="player-left">
+    <img id="pImg" src="https://i.ytimg.com/vi/none/default.jpg" onerror="this.style.visibility='hidden'"/>
+    <div class="meta">
+      <div id="pTitle" class="p-title">Nothing playing</div>
+      <div id="pArtist" class="p-artist">—</div>
+    </div>
+    <button id="likeBtn" class="icon-btn" title="Like"><i class="bi bi-heart"></i></button>
+  </div>
+
+  <div class="player-center">
+    <div class="controls">
+      <button id="shuffleBtn" class="icon-btn" title="Shuffle"><i class="bi bi-shuffle"></i></button>
+      <button id="prevBtn" class="icon-btn"><i class="bi bi-skip-start-fill"></i></button>
+      <button id="playBtn" class="play-btn"><i class="bi bi-play-fill"></i></button>
+      <button id="nextBtn" class="icon-btn"><i class="bi bi-skip-end-fill"></i></button>
+      <button id="repeatBtn" class="icon-btn" title="Repeat"><i class="bi bi-repeat"></i></button>
+    </div>
+    <div class="progress-wrap">
+      <span id="curTime">0:00</span>
+      <input type="range" id="seek" min="0" max="100" value="0" step="0.1"/>
+      <span id="durTime">0:00</span>
+    </div>
+  </div>
+
+  <div class="player-right">
+    <button id="muteBtn" class="icon-btn"><i class="bi bi-volume-up-fill"></i></button>
+    <input type="range" id="volume" min="0" max="100" value="100"/>
+    <button id="addToPlaylistBtn" class="icon-btn" title="Add to playlist"><i class="bi bi-plus-square"></i></button>
+  </div>
+</footer>
+
+<!-- Hidden YouTube player -->
+<div id="ytPlayer" style="position:fixed;right:0;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;"></div>
+
+<!-- Modal: API key -->
+<div class="modal-backdrop-x" id="apiModal" hidden>
+  <div class="modal-x glass">
+    <h3>Add your YouTube API Key</h3>
+    <p>Get a free key from <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">Google Cloud Console</a> and enable <b>YouTube Data API v3</b>.</p>
+    <input id="apiKeyInput" type="text" placeholder="AIza..." />
+    <div class="d-flex gap-2 mt-3">
+      <button class="btn btn-success flex-grow-1" id="saveKeyBtn">Save & Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Add to playlist -->
+<div class="modal-backdrop-x" id="addModal" hidden>
+  <div class="modal-x glass">
+    <h3>Add to Playlist</h3>
+    <div id="modalPlaylists" class="d-flex flex-column gap-2 my-2"></div>
+    <div class="d-flex gap-2">
+      <input id="newPlInput" placeholder="New playlist name"/>
+      <button class="btn btn-success" id="createPlBtn">Create</button>
+    </div>
+    <button class="btn btn-link text-light mt-2" onclick="document.getElementById('addModal').hidden=true">Close</button>
+  </div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="script.js"></script>
+</body>
+</html>
